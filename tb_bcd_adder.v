@@ -3,14 +3,15 @@
 module testbench;
     wire a0, a1, a2, a3;
     wire b0, b1, b2, b3;
+    wire clk, enable, store, reset;
     wire c0, c1, c2, c3;
-    wire carry_out, clk, enable;
-	
-    bcd_adder uut (.a0(a0), .a1(a1), .a2(a2), .a3(a3),
-                   .b0(b0), .b1(b1), .b2(b2), .b3(b3),
-                   .c0(c0), .c1(c1), .c2(c2), .c3(c3),
-                   .carry_out(carry_out),
-                   .clk(clk), .enable(enable));
+    
+    bcd_adder uut (
+      .a0(a0), .a1(a1), .a2(a2), .a3(a3),
+      .b0(b0), .b1(b1), .b2(b2), .b3(b3),
+      .clk(clk), .enable(enable), .store(store), .reset(reset),
+      .c0(c0), .c1(c1), .c2(c2), .c3(c3),
+      );
 
     // Clock generation
     initial begin
@@ -23,31 +24,24 @@ module testbench;
         // Initialize inputs
         a0 = 0; a1 = 1; a2 = 0; a3 = 0;
         b0 = 1; b1 = 0; b2 = 0; b3 = 0;
-        reset = 1;
-        #10; // wait for 10 units of time (10ns) before moving to next line
+        reset = 1; #10;
         
         // Release reset
         reset = 0; #10;
         
-        enable = 1; #10; // Enable the adder
+        enable = 1; #50; // Enable the adder
 
-        store = 1; #10; // Enable storage
+        store = 1; #50; // Enable storage
       	
         store = 0; #10; // Disable storage
-        // Apply test vectors
-      	integer i;
-      	for (i = 1; i < 5; i = i + 1) begin
-          	d = i % 2;
-         	#10;
     	end
         
         // Finish simulation
         $finish;
-    end
 
     // Monitor signals
     initial begin
-      $monitor("At time %t, d = %b, clk = %b, reset = %b, q = %b, q_ = %b", $time, d, clk, reset, q, q_);
+      $monitor("At time %t, c0 = %b, c1 = %b, c2 = %b, c3 = %b, store = %b, enable = %b, reset = %b", $time, c0, c1, c2, c3, store, enable, reset);
     end
   
   	// Dumpfile and Dumpvars
