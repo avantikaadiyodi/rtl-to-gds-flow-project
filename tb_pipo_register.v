@@ -1,7 +1,7 @@
 module testbench;
     reg clk, reset, load;
-    reg [7:0] data_in;
-    wire [7:0] data_out;
+    reg [3:0] data_in;
+    wire [3:0] data_out;
 
     pipo_register uut (
         .clk(clk),
@@ -19,13 +19,13 @@ module testbench;
     // Stimulus
     initial begin
         // Initialize inputs
-        data_in = 8'b00000000; #100;
+        data_in = 4'b0000; #100;
         reset = 1; #10;
         load = 1; #10;
       	reset = 0; #10;
         
         // Apply test vectors
-        data_in = 8'b10111010; #10;
+        data_in = 8'b1011; #10;
         #160
         $finish;
     end
